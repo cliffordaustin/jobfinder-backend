@@ -37,7 +37,7 @@ jobs:
           python manage.py collectstatic --noinput
 
       - name: Generate deployment package
-        run: zip -r deploy.zip .
+        run: zip -r deployment.zip .
 
       - name: Deploy to AWS Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
@@ -48,4 +48,4 @@ jobs:
           environment_name: ${{ secrets.EB_ENV_NAME }}
           region: ${{ secrets.AWS_REGION }}
           version_label: "deploy-${{ github.sha }}"
-          deployment_package: deploy.zip
+          deployment_package: deployment.zip
