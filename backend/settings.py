@@ -35,9 +35,6 @@ ALLOWED_HOSTS = [
     "jobfinder-env.eba-twqe3t6p.us-west-2.elasticbeanstalk.com",
 ]
 
-
-# Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
