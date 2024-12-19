@@ -182,7 +182,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 STATIC_URL = "/static/"  # Path for serving static files
