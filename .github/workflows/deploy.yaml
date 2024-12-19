@@ -49,3 +49,5 @@ jobs:
           region: ${{ secrets.AWS_REGION }}
           version_label: "deploy-${{ github.sha }}"
           deployment_package: deploy.zip
+          environment_variables: |
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
