@@ -27,6 +27,7 @@ def get_environ_vars():
             text=True,
             check=True,
         )
+        print("completed process", ast.literal_eval(completed_process.stdout))
         return ast.literal_eval(completed_process.stdout)
     except Exception as e:
         print(f"Error fetching environment variables: {e}")
