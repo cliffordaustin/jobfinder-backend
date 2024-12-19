@@ -14,10 +14,30 @@ from pathlib import Path
 import os
 from environs import Env
 
-env = Env()
+import subprocess
+import ast
 
-if env.bool("DEBUG", default=False):
-    env.read_env(path=".env", override=True)
+
+def get_environ_vars():
+    try:
+        # Run the get-config command to fetch environment variables
+        completed_process = subprocess.run(
+            ["/opt/elasticbeanstalk/bin/get-config", "environment"],
+            stdout=subprocess.PIPE,
+            text=True,
+            check=True,
+        )
+        return ast.literal_eval(completed_process.stdout)
+    except Exception as e:
+        print(f"Error fetching environment variables: {e}")
+        return {}
+
+
+env = Env()
+env.read_env(path=".env", override=True)
+
+env_vars = get_environ_vars()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,14 +47,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = env("SECRET_KEY")
-
-# Try multiple ways to get the secret key
-SECRET_KEY = os.getenv("SECRET_KEY")  # Try direct OS environment first
-if not SECRET_KEY:  # If not found, try environs
-    SECRET_KEY = env.str("SECRET_KEY", default=None)
-if not SECRET_KEY:  # If still not found, raise error
-    raise Exception("SECRET_KEY environment variable is required!")
+SECRET_KEY = env_vars.get("SECRET_KEY", env("SECRET_KEY"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
@@ -134,7 +147,7 @@ REST_AUTH = {
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
+DATABASES = {"default": env_vars.get("DATABASE_URL", env.dj_db_url("DATABASE_URL"))}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -191,18 +204,17 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
+AWS_ACCESS_KEY_ID = env_vars.get("AWS_ACCESS_KEY_ID", env("AWS_ACCESS_KEY_ID"))
+AWS_SECRET_ACCESS_KEY = env_vars.get(
+    "AWS_SECRET_ACCESS_KEY", env("AWS_SECRET_ACCESS_KEY")
+)
+AWS_STORAGE_BUCKET_NAME = env_vars.get(
+    "AWS_STORAGE_BUCKET_NAME", env("AWS_STORAGE_BUCKET_NAME")
+)
+AWS_S3_REGION_NAME = env_vars.get("AWS_S3_REGION_NAME", env("AWS_S3_REGION_NAME"))
 AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 
 AWS_S3_FILE_OVERWRITE = False
-# AWS_S3_SIGNATURE_NAME = "s3v4"
-# AWS_S3_URL_PROTOCOL = "https"
-# AWS_DEFAULT_ACL = None
-# AWS_S3_VERIFY = True
-# AWS_MEDIA_LOCATION = "media"
 
 STORAGES = {
     "default": {
