@@ -28,6 +28,13 @@ def get_environ_vars():
             check=True,
         )
         print("completed process", ast.literal_eval(completed_process.stdout))
+        print(
+            "completed process type", type(ast.literal_eval(completed_process.stdout))
+        )
+        print(
+            "Secret key 1", ast.literal_eval(completed_process.stdout).get("SECRET_KEY")
+        )
+        print("Secret key 2", ast.literal_eval(completed_process.stdout)["SECRET_KEY"])
         return ast.literal_eval(completed_process.stdout)
     except Exception as e:
         print(f"Error fetching environment variables: {e}")
