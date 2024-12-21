@@ -147,14 +147,21 @@ REST_AUTH = {
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-db_url = env_vars.get("DATABASE_URL")
-if db_url:
-    DATABASES = {"default": dj_database_url.parse(db_url)}
-else:
-    DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
+# db_url = env_vars.get("DATABASE_URL")
+# if db_url:
+#     DATABASES = {"default": dj_database_url.parse(db_url)}
+# else:
+#     DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
 
-print("DATABASES", DATABASES)
-print("env_vars", env_vars)
+# print("DATABASES", DATABASES)
+# print("env_vars", env_vars)
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
