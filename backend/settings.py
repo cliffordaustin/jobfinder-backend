@@ -16,6 +16,7 @@ from environs import Env
 
 import subprocess
 import json
+import dj_database_url
 
 
 def get_environ_vars():
@@ -147,7 +148,11 @@ REST_AUTH = {
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {"default": env_vars.get("DATABASE_URL", env.dj_db_url("DATABASE_URL"))}
+db_url = env_vars.get("DATABASE_URL")
+if db_url:
+    DATABASES = {"default": dj_database_url.parse(db_url)}
+else:
+    DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
