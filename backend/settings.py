@@ -50,7 +50,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env_vars.get("SECRET_KEY", env("SECRET_KEY"))
 
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-    "allauth.socialaccount.providers.facebook",
     "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
@@ -92,6 +91,20 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
+}
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": env_vars.get("GOOGLE_CLIENT_ID", env("GOOGLE_CLIENT_ID")),
+            "secret": env_vars.get("GOOGLE_CLIENT_SECRET", env("GOOGLE_CLIENT_SECRET")),
+            "key": "",
+        },
+        "SCOPE": ["email", "profile"],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    }
 }
 
 
@@ -157,9 +170,6 @@ if db_url:
     }
 else:
     DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
-
-print("DATABASES", DATABASES)
-print("env_vars", env_vars)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
