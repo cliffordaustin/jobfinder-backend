@@ -147,23 +147,19 @@ REST_AUTH = {
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# db_url = env_vars.get("DATABASE_URL")
-# if db_url:
-#     DATABASES = {"default": dj_database_url.parse(db_url)}
-# else:
-#     DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
-
-# print("DATABASES", DATABASES)
-# print("env_vars", env_vars)
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+db_url = env_vars.get("DATABASE_URL")
+if db_url:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=db_url,
+            conn_max_age=600,
+        )
     }
-}
+else:
+    DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
 
 print("DATABASES", DATABASES)
+print("env_vars", env_vars)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -219,23 +215,23 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
-# AWS_ACCESS_KEY_ID = env_vars.get("AWS_ACCESS_KEY_ID", env("AWS_ACCESS_KEY_ID"))
-# AWS_SECRET_ACCESS_KEY = env_vars.get(
-#     "AWS_SECRET_ACCESS_KEY", env("AWS_SECRET_ACCESS_KEY")
-# )
-# AWS_STORAGE_BUCKET_NAME = env_vars.get(
-#     "AWS_STORAGE_BUCKET_NAME", env("AWS_STORAGE_BUCKET_NAME")
-# )
-# AWS_S3_REGION_NAME = env_vars.get("AWS_S3_REGION_NAME", env("AWS_S3_REGION_NAME"))
-# AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+AWS_ACCESS_KEY_ID = env_vars.get("AWS_ACCESS_KEY_ID", env("AWS_ACCESS_KEY_ID"))
+AWS_SECRET_ACCESS_KEY = env_vars.get(
+    "AWS_SECRET_ACCESS_KEY", env("AWS_SECRET_ACCESS_KEY")
+)
+AWS_STORAGE_BUCKET_NAME = env_vars.get(
+    "AWS_STORAGE_BUCKET_NAME", env("AWS_STORAGE_BUCKET_NAME")
+)
+AWS_S3_REGION_NAME = env_vars.get("AWS_S3_REGION_NAME", env("AWS_S3_REGION_NAME"))
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 
-# AWS_S3_FILE_OVERWRITE = False
+AWS_S3_FILE_OVERWRITE = False
 
-# STORAGES = {
-#     "default": {
-#         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-#     },
-#     "staticfiles": {
-#         "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
-#     },
-# }
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+    },
+}
