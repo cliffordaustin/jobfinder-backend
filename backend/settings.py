@@ -19,26 +19,8 @@ import json
 import dj_database_url
 
 
-def get_environ_vars():
-    try:
-        # Run the get-config command to fetch environment variables
-        completed_process = subprocess.run(
-            ["/opt/elasticbeanstalk/bin/get-config", "environment"],
-            stdout=subprocess.PIPE,
-            text=True,
-            check=True,
-        )
-        return json.loads(completed_process.stdout)
-    except Exception as e:
-        print(f"Error fetching environment variables: {e}")
-        return {}
-
-
 env = Env()
 env.read_env(path=".env", override=True)
-
-env_vars = get_environ_vars()
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env_vars.get("SECRET_KEY", env("SECRET_KEY"))
+SECRET_KEY = env("SECRET_KEY")
 
 DEBUG = env.bool("DEBUG", default=False)
 
@@ -96,8 +78,8 @@ REST_FRAMEWORK = {
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
-            "client_id": env_vars.get("GOOGLE_CLIENT_ID", env("GOOGLE_CLIENT_ID")),
-            "secret": env_vars.get("GOOGLE_CLIENT_SECRET", env("GOOGLE_CLIENT_SECRET")),
+            "client_id": env("GOOGLE_CLIENT_ID"),
+            "secret": env("GOOGLE_CLIENT_SECRET"),
             "key": "",
         },
         "SCOPE": ["email", "profile"],
@@ -163,16 +145,7 @@ REST_AUTH = {
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-db_url = env_vars.get("DATABASE_URL")
-if db_url:
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=db_url,
-            conn_max_age=600,
-        )
-    }
-else:
-    DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
+DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -228,14 +201,10 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
-AWS_ACCESS_KEY_ID = env_vars.get("AWS_ACCESS_KEY_ID", env("AWS_ACCESS_KEY_ID"))
-AWS_SECRET_ACCESS_KEY = env_vars.get(
-    "AWS_SECRET_ACCESS_KEY", env("AWS_SECRET_ACCESS_KEY")
-)
-AWS_STORAGE_BUCKET_NAME = env_vars.get(
-    "AWS_STORAGE_BUCKET_NAME", env("AWS_STORAGE_BUCKET_NAME")
-)
-AWS_S3_REGION_NAME = env_vars.get("AWS_S3_REGION_NAME", env("AWS_S3_REGION_NAME"))
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
 AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 
 AWS_S3_FILE_OVERWRITE = False
