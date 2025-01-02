@@ -14,11 +14,6 @@ from pathlib import Path
 import os
 from environs import Env
 
-import subprocess
-import json
-import dj_database_url
-
-
 env = Env()
 env.read_env(path=".env", override=True)
 
@@ -36,7 +31,7 @@ DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = [
     "localhost",
-    "jobfinder-env.eba-twqe3t6p.us-west-2.elasticbeanstalk.com",
+    "jobfinder.us-west-2.elasticbeanstalk.com",
 ]
 
 INSTALLED_APPS = [
