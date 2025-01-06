@@ -32,6 +32,7 @@ DEBUG = env.bool("DEBUG", default=False)
 ALLOWED_HOSTS = [
     "localhost",
     "jobfinder.us-west-2.elasticbeanstalk.com",
+    "d1tnfdr327pa4d.cloudfront.net",
 ]
 
 INSTALLED_APPS = [
