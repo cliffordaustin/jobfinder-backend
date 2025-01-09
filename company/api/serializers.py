@@ -19,5 +19,6 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_company_profile_image(self, instance):
-
-        return instance.user.profile_pic.url
+        if instance.user.profile_pic and instance.user.profile_pic.name:
+            return instance.user.profile_pic.url
+        return None
